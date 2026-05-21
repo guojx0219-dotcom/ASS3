@@ -119,11 +119,14 @@ public class StartScene extends PixelScene {
 
 		String sortText = "";
 		switch (SPDSettings.gamesInProgressSort()){
-			case "level":
+			case GamesInProgress.SORT_LEVEL:
 				sortText = Messages.get(this, "sort_level");
 				break;
-			case "last_played":
+			case GamesInProgress.SORT_LAST_PLAYED:
 				sortText = Messages.get(this, "sort_recent");
+				break;
+			case GamesInProgress.SORT_DEEPEST_FLOOR:
+				sortText = Messages.get(this, "sort_deepest");
 				break;
 		}
 
@@ -132,11 +135,7 @@ public class StartScene extends PixelScene {
 			protected void onClick() {
 				super.onClick();
 
-				if (SPDSettings.gamesInProgressSort().equals("level")){
-					SPDSettings.gamesInProgressSort("last_played");
-				} else {
-					SPDSettings.gamesInProgressSort("level");
-				}
+				SPDSettings.gamesInProgressSort(GamesInProgress.nextSort(SPDSettings.gamesInProgressSort()));
 
 				ShatteredPixelDungeon.seamlessResetScene();
 			}

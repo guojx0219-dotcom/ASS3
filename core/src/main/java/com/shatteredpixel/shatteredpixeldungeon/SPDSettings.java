@@ -224,11 +224,11 @@ public class SPDSettings extends GameSettings {
 	}
 
 	public static String gamesInProgressSort(){
-		return getString(KEY_GAMES_SORT, "level");
+		return GamesInProgress.validateSort(getString(KEY_GAMES_SORT, GamesInProgress.SORT_LEVEL));
 	}
 
 	public static void gamesInProgressSort(String value){
-		put(KEY_GAMES_SORT, value);
+		put(KEY_GAMES_SORT, GamesInProgress.validateSort(value));
 	}
 
 	//Game State
