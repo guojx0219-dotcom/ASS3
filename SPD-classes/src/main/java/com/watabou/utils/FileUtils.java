@@ -136,6 +136,21 @@ public class FileUtils {
 		return getFileHandle( name ).delete();
 	}
 
+	// Simple helper used by save recovery.
+	public static boolean copyDir( String from, String to ){
+		FileHandle oldDir = getFileHandle( from );
+		FileHandle newDir = getFileHandle( to );
+
+		if (oldDir == null || !oldDir.exists() || !oldDir.isDirectory()){
+			return false;
+		}
+		if (newDir.exists()){
+			newDir.deleteDirectory();
+		}
+		oldDir.copyTo( newDir );
+		return newDir.exists() && newDir.isDirectory();
+	}
+
 	//replaces a file with junk data, for as many bytes as given
 	//This is helpful as some cloud sync systems do not persist deleted, empty, or zeroed files
 	public static void overwriteFile( String name, int bytes ){
@@ -159,6 +174,17 @@ public class FileUtils {
 		} else {
 			return dir.deleteDirectory();
 		}
+	}
+
+	// Make folder if it does not exist.
+	public static boolean makeDir( String name ){
+		FileHandle dir = getFileHandle( name );
+
+		if (dir == null){
+			return false;
+		}
+		dir.mkdirs();
+		return dir.exists() && dir.isDirectory();
 	}
 
 	public static ArrayList<String> filesInDir( String name ){

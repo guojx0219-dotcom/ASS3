@@ -834,6 +834,8 @@ public class Dungeon {
 	
 	public static void deleteGame( int save, boolean deleteLevels ) {
 
+		SaveRecovery.backupBeforeDelete( save );
+
 		if (deleteLevels) {
 			String folder = GamesInProgress.gameFolder(save);
 			for (String file : FileUtils.filesInDir(folder)){
