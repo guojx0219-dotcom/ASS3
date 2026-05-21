@@ -36,6 +36,10 @@ import java.util.HashMap;
 public class GamesInProgress {
 	
 	public static final int MAX_SLOTS = HeroClass.values().length;
+
+	public static final String SORT_LEVEL = "level";
+	public static final String SORT_LAST_PLAYED = "last_played";
+	public static final String SORT_DEEPEST_FLOOR = "deepest_floor";
 	
 	//null means we have loaded info and it is empty, no entry means unknown.
 	private static HashMap<Integer, Info> slotStates = new HashMap<>();
@@ -82,16 +86,45 @@ public class GamesInProgress {
 			Info curr = check(i);
 			if (curr != null) result.add(curr);
 		}
-		switch (SPDSettings.gamesInProgressSort()){
-			case "level": default:
-				Collections.sort(result, levelComparator);
-				break;
-			case "last_played":
-				Collections.sort(result, lastPlayedComparator);
-				break;
-		}
+
+		sort(result, SPDSettings.gamesInProgressSort());
 
 		return result;
+	}
+
+	public static String validateSort( String sort ){
+		if (SORT_LAST_PLAYED.equals(sort) || SORT_DEEPEST_FLOOR.equals(sort)){
+			return sort;
+		} else {
+			return SORT_LEVEL;
+		}
+	}
+
+	public static String nextSort( String sort ){
+		switch (validateSort(sort)){
+			case SORT_LEVEL:
+				return SORT_LAST_PLAYED;
+			case SORT_LAST_PLAYED:
+				return SORT_DEEPEST_FLOOR;
+			case SORT_DEEPEST_FLOOR:
+			default:
+				return SORT_LEVEL;
+		}
+	}
+
+	public static void sort( ArrayList<Info> infos, String sort ){
+		switch (validateSort(sort)){
+			case SORT_LAST_PLAYED:
+				Collections.sort(infos, lastPlayedComparator);
+				break;
+			case SORT_DEEPEST_FLOOR:
+				Collections.sort(infos, deepestFloorComparator);
+				break;
+			case SORT_LEVEL:
+			default:
+				Collections.sort(infos, levelComparator);
+				break;
+		}
 	}
 	
 	public static Info check( int slot ) {
@@ -206,6 +239,19 @@ public class GamesInProgress {
 		public int compare(GamesInProgress.Info lhs, GamesInProgress.Info rhs ) {
 			if (rhs.level != lhs.level){
 				return (int)Math.signum( rhs.level - lhs.level );
+			} else {
+				return lastPlayedComparator.compare(lhs, rhs);
+			}
+		}
+	};
+
+	public static final Comparator<GamesInProgress.Info> deepestFloorComparator = new Comparator<GamesInProgress.Info>() {
+		@Override
+		public int compare(GamesInProgress.Info lhs, GamesInProgress.Info rhs ) {
+			if (rhs.maxDepth != lhs.maxDepth){
+				return (int)Math.signum( rhs.maxDepth - lhs.maxDepth );
+			} else if (rhs.depth != lhs.depth) {
+				return (int)Math.signum( rhs.depth - lhs.depth );
 			} else {
 				return lastPlayedComparator.compare(lhs, rhs);
 			}
