@@ -147,7 +147,10 @@ public class FileUtils {
 		if (newDir.exists()){
 			newDir.deleteDirectory();
 		}
-		oldDir.copyTo( newDir );
+		newDir.mkdirs();
+		for (FileHandle file : oldDir.list()){
+			file.copyTo( newDir.child( file.name() ) );
+		}
 		return newDir.exists() && newDir.isDirectory();
 	}
 

@@ -7,4 +7,13 @@ dependencies {
     api project(':SPD-classes')
     implementation project(':services')
     testImplementation 'junit:junit:4.13.2'
+    testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+sourceSets {
+    test {
+        // Unit tests need the normal game message files used by GamesInProgress.
+        resources.srcDirs += ["src/main/assets"]
+    }
 }
