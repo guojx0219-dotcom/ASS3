@@ -1150,6 +1150,7 @@ public abstract class Mob extends Char {
 			if (enemyInFOV) {
 				enemySeen = true;
 				notice();
+				MobLogger.logAlert(id(), getClass().getSimpleName());
 				setState(HUNTING);
 				target = enemy.pos;
 			} else {
